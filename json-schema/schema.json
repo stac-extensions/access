@@ -1,0 +1,217 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://stac-extensions.github.io/template/v0.1.0/schema.json#",
+  "title": "Template Extension",
+  "description": "STAC Template Extension for STAC Catalogs, STAC Collections and STAC Items.",
+  "type": "object",
+  "required": [
+    "stac_extensions",
+    "type"
+  ],
+  "properties": {
+    "stac_extensions": {
+      "type": "array",
+      "contains": {
+        "const": "https://stac-extensions.github.io/template/v0.1.0/schema.json"
+      }
+    },
+    "type": {
+      "$comment": "List the allowed STAC object types here, any of: Catalog, Collection, Feature (for Items)",
+      "type": "string",
+      "enum": [
+        "Catalog",
+        "Collection",
+        "Feature"
+      ]
+    },
+    "assets": {
+      "$comment": "This validates the fields in Item Assets, but does not require them.",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/fieldsAndBands"
+      }
+    },
+    "links": {
+      "$comment": "This validates the fields in links, remove this if not applicable.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/fields"
+      }
+    },
+    "assetTemplates": {
+      "$comment": "This validates the fields in asset templates, remove this if not applicable.",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/fieldsAndBands"
+      }
+    },
+    "linkTemplates": {
+      "$comment": "This validates the fields in link templates, remove this if not applicable.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/fields"
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "$comment": "This validates the fields in the item properties, remove this if not applicable.",
+      "type": "object",
+      "required": ["type", "properties"],
+      "properties": {
+        "type": {
+          "const": "Feature"
+        },
+        "properties": {
+          "$ref": "#/definitions/fieldsAndBands"
+        }
+      }
+    },
+    {
+      "$comment": "This is the schema for top-level fields and item assets in STAC Collections, remove this fully or in parts if not applicable.",
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "const": "Collection"
+        },
+        "summaries": {
+          "$ref": "#/definitions/summaries"
+        },
+        "item_assets": {
+          "$comment": "This validates the fields in item assets, remove this if not applicable.",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/fieldsAndBands"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/fieldsAndBands"
+        }
+      ]
+    },
+    {
+      "$comment": "This is the schema for top-level fields in STAC Catalogs, remove this fully or in parts if not applicable.",
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "const": "Catalog"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/fields"
+        }
+      ]
+    }
+  ],
+  "definitions": {
+    "template:new_field": {
+      "type": "string"
+    },
+    "template:xyz": {
+      "type": "object",
+      "required": [
+        "x",
+        "y",
+        "z"
+      ],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "z": {
+          "type": "number"
+        }
+      }
+    },
+    "template:another_one": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "fields": {
+      "$comment": "Add your new fields here. Don't require them here as they would be required in all places where we reference the fields as possibly allowed.",
+      "type": "object",
+      "properties": {
+        "template:new_field": {
+          "$ref": "#/definitions/template:new_field"
+        },
+        "template:xyz": {
+          "$ref": "#/definitions/template:xyz"
+        },
+        "template:another_one": {
+          "$ref": "#/definitions/template:another_one"
+        }
+      },
+      "patternProperties": {
+        "^(?!template:)": {
+          "$comment": "Above, change `template` to the prefix of this extension"
+        }
+      },
+      "additionalProperties": false
+    },
+    "fieldsAndBands": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/fields"
+        },
+        {
+          "properties": {
+            "bands": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/fields"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "summaries": {
+      "$comment": "These are examples summaries that allows lists, ranges and JSON schemas, depending on how it makes sense for the individual data types of the fields. Validation only works for lists and ranges. JSON Schema (type: object) can always be provided for fields, but the corresponding schema for lists (type: array and items) and ranges (properties) should only be provided if it actually makes sense.",
+      "type": "object",
+      "properties": {
+        "template:new_field": {
+          "type": ["array", "object"],
+          "items": {
+            "$ref": "#/definitions/template:new_field"
+          },
+          "properties": {
+            "minimum": {
+              "$ref": "#/definitions/template:new_field"
+            },
+            "maximum": {
+              "$ref": "#/definitions/template:new_field"
+            }
+          }
+        },
+        "template:xyz": {
+          "type": ["array", "object"],
+          "items": {
+            "$ref": "#/definitions/template:xyz"
+          }
+        },
+        "template:another_one": {
+          "type": ["array", "object"],
+          "items": {
+            "$ref": "#/definitions/template:another_one"
+          }
+        }
+      },
+      "patternProperties": {
+        "^(?!template:)": {
+          "$comment": "Above, change `template` to the prefix of this extension"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
