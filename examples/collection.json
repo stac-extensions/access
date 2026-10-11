@@ -1,13 +1,18 @@
 {
   "stac_version": "1.1.0",
   "stac_extensions": [
-    "https://stac-extensions.github.io/template/v0.1.0/schema.json"
+    "https://stac-extensions.github.io/access/v0.1.0/schema.json"
   ],
   "type": "Collection",
   "id": "collection",
   "title": "A title",
   "description": "A description",
-  "license": "Apache-2.0",
+  "license": "other",
+  "access:type": "restricted",
+  "access:restrictions": [
+    "registration"
+  ],
+  "access:instructions": "Registration is required at [example.com](https://example.com/register). Each user can download 100 products per day.",
   "extent": {
     "spatial": {
       "bbox": [
@@ -28,41 +33,51 @@
       ]
     }
   },
-  "template:new_field": "test",
-  "template:xyz": {
-    "x": 1,
-    "y": 2,
-    "z": 3
-  },
-  "template:another_one": [
-    1,
-    2,
-    3
-  ],
-  "assets": {
-    "example": {
-      "href": "https://example.com/examples/file.xyz",
-      "template:new_field": "test"
-    }
-  },
   "item_assets": {
-    "data": {
+    "product": {
       "roles": [
         "data"
       ],
-      "template:new_field": "test"
+      "access:availability": "nearline",
+      "access:retrieval_time": "PT1H"
     }
   },
   "summaries": {
     "datetime": {
       "minimum": "2015-06-23T00:00:00Z",
       "maximum": "2019-07-10T13:44:56Z"
-    }
+    },
+    "access:availability": [
+      "online",
+      "nearline"
+    ],
+    "access:type": [
+      "restricted"
+    ]
   },
   "links": [
     {
       "href": "https://example.com/examples/collection.json",
       "rel": "self"
+    },
+    {
+      "href": "https://example.com/terms",
+      "rel": "terms-of-service",
+      "type": "text/html",
+      "title": "Terms of Use"
+    },
+    {
+      "href": "https://example.com/register",
+      "rel": "registration",
+      "type": "text/html",
+      "title": "Register"
+    },
+    {
+      "href": "https://example.com/portal",
+      "rel": "via",
+      "type": "text/html",
+      "title": "Data portal",
+      "access:type": "open"
     },
     {
       "href": "https://example.com/examples/item.json",

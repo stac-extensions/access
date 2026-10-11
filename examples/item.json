@@ -1,7 +1,9 @@
 {
   "stac_version": "1.1.0",
   "stac_extensions": [
-    "https://stac-extensions.github.io/template/v0.1.0/schema.json"
+    "https://stac-extensions.github.io/access/v0.1.0/schema.json",
+    "https://stac-extensions.github.io/alternate-assets/v1.2.0/schema.json",
+    "https://stac-extensions.github.io/order/v1.1.0/schema.json"
   ],
   "type": "Feature",
   "id": "item",
@@ -40,17 +42,13 @@
   },
   "properties": {
     "datetime": "2020-12-11T22:38:32Z",
-    "template:new_field": "test",
-    "template:xyz": {
-      "x": 1,
-      "y": 2,
-      "z": 3
-    },
-    "template:another_one": [
-      1,
-      2,
-      3
-    ]
+    "access:type": "restricted",
+    "access:restrictions": [
+      "registration",
+      "transfer_fee"
+    ],
+    "access:availability": "online",
+    "order:status": "orderable"
   },
   "links": [
     {
@@ -59,9 +57,40 @@
     }
   ],
   "assets": {
-    "data": {
-      "href": "https://example.com/examples/file.xyz",
-      "template:new_field": "test"
+    "product": {
+      "href": "https://archive.example.com/products/item.zip",
+      "type": "application/zip",
+      "roles": [
+        "data"
+      ],
+      "alternate:name": "Archive",
+      "access:restrictions": [
+        "registration"
+      ],
+      "access:availability": "offline",
+      "access:retrieval_time": "PT24H",
+      "alternate": {
+        "mirror": {
+          "href": "https://mirror.example.org/products/item.zip",
+          "alternate:name": "Mirror",
+          "access:availability": "online"
+        },
+        "s3": {
+          "href": "s3://example-bucket/products/item.zip",
+          "alternate:name": "S3",
+          "access:restrictions": [
+            "transfer_fee"
+          ],
+          "access:availability": "online"
+        }
+      }
+    },
+    "thumbnail": {
+      "href": "https://archive.example.com/products/item.png",
+      "type": "image/png",
+      "roles": [
+        "thumbnail"
+      ]
     }
   }
 }
